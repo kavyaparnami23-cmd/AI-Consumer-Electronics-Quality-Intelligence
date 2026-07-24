@@ -46,7 +46,6 @@ class TfidfSentimentModel:
             class_weight="balanced",      # handles sentiment imbalance
             random_state=NLP_RANDOM_STATE,
             solver="lbfgs",
-            multi_class="multinomial",
             C=1.0,
         )
         self.label_encoder = LabelEncoder()
