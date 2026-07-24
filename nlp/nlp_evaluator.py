@@ -73,7 +73,7 @@ class NLPEvaluator:
 
             acc = accuracy_score(y_true, y_pred)
             prec, rec, f1, _ = precision_recall_fscore_support(y_true, y_pred, average="weighted")
-            clf_rep = classification_report(y_true, y_pred, target_names=SENTIMENT_LABELS)
+            clf_rep = classification_report(y_true, y_pred, labels=SENTIMENT_LABELS, target_names=SENTIMENT_LABELS, zero_division=0)
             cm = confusion_matrix(y_true, y_pred, labels=SENTIMENT_LABELS)
 
             cm_path = os.path.join(self.plots_dir, "tfidf_confusion_matrix.png")
@@ -135,7 +135,7 @@ class NLPEvaluator:
 
             acc = accuracy_score(y_true_str, y_pred_str)
             prec, rec, f1, _ = precision_recall_fscore_support(y_true_str, y_pred_str, average="weighted")
-            clf_rep = classification_report(y_true_str, y_pred_str, target_names=SENTIMENT_LABELS)
+            clf_rep = classification_report(y_true_str, y_pred_str, labels=SENTIMENT_LABELS, target_names=SENTIMENT_LABELS, zero_division=0)
             cm = confusion_matrix(y_true_str, y_pred_str, labels=SENTIMENT_LABELS)
 
             cm_path = os.path.join(self.plots_dir, "distilbert_confusion_matrix.png")

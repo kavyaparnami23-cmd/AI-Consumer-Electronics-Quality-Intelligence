@@ -19,7 +19,7 @@ class NLPTrainingPipeline:
         3. Model Evaluation & Artifact Generation
     """
 
-    def run(self, run_bert: bool = True):
+    def run(self, run_bert: bool = True, max_train_samples: int = None, max_test_samples: int = None):
         try:
             logger.info("=" * 60)
             logger.info("NLP TRAINING PIPELINE STARTED")
@@ -31,6 +31,14 @@ class NLPTrainingPipeline:
             prep_data = prep.prepare()
             train_df = prep_data["train_df"]
             test_df = prep_data["test_df"]
+
+            if max_train_samples and max_train_samples < len(train_df):
+                print(f"  Subsampling train data for DistilBERT fine-tuning: {max_train_samples} samples")
+                train_df = train_df.sample(n=max_train_samples, random_state=42).reset_index(drop=True)
+
+            if max_test_samples and max_test_samples < len(test_df):
+                print(f"  Subsampling test data for evaluation: {max_test_samples} samples")
+                test_df = test_df.sample(n=max_test_samples, random_state=42).reset_index(drop=True)
 
             # Stage 2: Model Training
             print("\n[2/3] NLP Model Training ...")
@@ -60,4 +68,4 @@ class NLPTrainingPipeline:
 
 if __name__ == "__main__":
     pipeline = NLPTrainingPipeline()
-    pipeline.run(run_bert=False)
+    pipeline.run(run_bert=True, max_train_samples=500, max_test_samples=100)

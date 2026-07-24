@@ -1,8 +1,8 @@
 import os
 
-# ==========================
-# NLP Configuration
-# ==========================
+# Set HuggingFace cache directory to project directory (avoids C: drive space limit)
+os.environ["HF_HOME"] = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".cache", "huggingface"))
+
 
 # ---- Paths ----
 NLP_DATASET_PATH     = os.path.join("datasets", "clean_reviews.csv")
