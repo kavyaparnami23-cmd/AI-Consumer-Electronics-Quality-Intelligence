@@ -1,0 +1,4 @@
+[2026-07-24 00:35:59,837] INFO : Logger Test Started
+[2026-07-24 00:35:59,837] INFO : This is an INFO message
+[2026-07-24 00:35:59,837] WARNING : This is a WARNING message
+[2026-07-24 00:35:59,837] ERROR : This is an ERROR message
