@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: ai_backend
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - .:/app
+
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+
+    container_name: ai_frontend
+
+    ports:
+      - "5173:5173"
+
+    depends_on:
+      - backend
+
+    restart: always

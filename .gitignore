@@ -1,0 +1,33 @@
+# Virtual Environment
+venv/
+
+# Python
+__pycache__/
+*.pyc
+
+# Logs
+logs/
+
+# MLflow
+mlruns/
+
+# Artifacts
+artifacts/
+
+# Saved Models
+saved_models/
+
+# HuggingFace Cache
+.cache/
+huggingface/
+
+# Data files & CSVs
+*.csv
+datasets/*.csv
+mlflow.db
+
+# VS Code
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints/
