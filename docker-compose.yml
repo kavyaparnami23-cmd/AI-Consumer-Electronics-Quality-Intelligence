@@ -2,31 +2,65 @@ version: "3.9"
 
 services:
 
+  # ── FastAPI Backend ──────────────────────────────────────────────────────────
   backend:
     build:
       context: .
       dockerfile: Dockerfile
-
     container_name: ai_backend
-
     ports:
       - "8000:8000"
-
     volumes:
-      - .:/app
+      # Persist trained models and MLflow data across restarts
+      - ./saved_models:/app/saved_models
+      - ./mlruns:/app/mlruns
+      - ./mlflow.db:/app/mlflow.db
+    environment:
+      - MLFLOW_TRACKING_URI=sqlite:///mlflow.db
+      - PYTHONUNBUFFERED=1
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s   # give time for model loading
+    restart: unless-stopped
 
-    restart: always
-
+  # ── React Frontend (built + served via Nginx) ────────────────────────────────
   frontend:
     build:
       context: ./frontend
-
+      dockerfile: Dockerfile
     container_name: ai_frontend
-
     ports:
-      - "5173:5173"
-
+      - "80:80"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:80"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
 
-    restart: always
+  # ── MLflow Tracking UI ───────────────────────────────────────────────────────
+  mlflow:
+    image: python:3.10-slim
+    container_name: ai_mlflow
+    working_dir: /mlflow
+    command: >
+      bash -c "pip install mlflow --quiet &&
+               mlflow ui --host 0.0.0.0 --port 5000
+               --backend-store-uri sqlite:///mlflow.db
+               --default-artifact-root ./mlruns"
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlruns:/mlflow/mlruns
+      - ./mlflow.db:/mlflow/mlflow.db
+    restart: unless-stopped
+
+volumes:
+  saved_models:
+  mlruns:

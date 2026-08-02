@@ -1,15 +1,27 @@
-FROM node:20-alpine
+# ── Frontend Production Dockerfile ────────────────────────────────────────────
+# Stage 1: Build the React + Vite app
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
 COPY package*.json ./
-
 RUN npm install
 
 COPY . .
-
 RUN npm run build
 
-EXPOSE 5173
+# Stage 2: Serve with Nginx
+FROM nginx:alpine
 
-CMD ["npm", "run", "dev", "--", "--host"]
+# Remove default nginx config
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Copy custom nginx config for SPA routing
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copy built static files
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

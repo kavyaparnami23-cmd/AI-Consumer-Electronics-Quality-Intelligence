@@ -1,12 +1,29 @@
 venv/
 __pycache__/
 *.pyc
+*.pyo
 .git
 .gitignore
-node_modules
-frontend/node_modules
-.cache
-mlruns
-logs
-artifacts
-notebooks
+node_modules/
+frontend/node_modules/
+
+# Large data files — not needed in container
+datasets/
+*.csv
+.cache/
+mlflow_install.log
+
+# Dev-only
+logs/
+notebooks/
+test_*.py
+*.log
+
+# Docker build artifacts
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+# IDE
+.vscode/
+.idea/
